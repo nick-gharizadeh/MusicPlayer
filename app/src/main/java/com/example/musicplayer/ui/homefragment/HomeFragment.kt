@@ -1,4 +1,4 @@
-package com.example.musicplayer.ui.HomeFragment
+package com.example.musicplayer.ui.homefragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
