@@ -1,10 +1,8 @@
 package com.example.musicplayer.ui.homefragment
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
@@ -28,6 +26,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             MediaStore.Audio.AudioColumns.ALBUM,
             MediaStore.Audio.ArtistColumns.ARTIST,
             MediaStore.Audio.AudioColumns.TITLE,
+            MediaStore.Audio.Media.ALBUM_ID
         )
 
         val c = context.contentResolver.query(
@@ -48,10 +47,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 audioModel.album = album
                 audioModel.artist = artist
                 audioModel.path = path
-                audioModel.albumArt = getAudioAlbumImageContentUri(
-                    this.getApplication<Application>().applicationContext,
-                    path
+                val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+                val imgUri = ContentUris.withAppendedId(
+                    sArtworkUri,
+                    c.getLong(4)
                 )
+                audioModel.albumArt = imgUri
                 Log.e("Nameee :$name", " Album :$album")
                 Log.e("Path :$path", " Artist :$artist")
                 tempAudioList.add(audioModel)
@@ -61,27 +62,4 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         return tempAudioList
     }
 
-    @SuppressLint("Range")
-    fun getAudioAlbumImageContentUri(context: Context, filePath: String): Uri? {
-        val audioUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        val selection = MediaStore.Audio.Media.DATA + "=? "
-        val projection = arrayOf(MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID)
-        val cursor: Cursor? = context.contentResolver.query(
-            audioUri,
-            projection,
-            selection, arrayOf(filePath), null
-        )
-        if (cursor != null && cursor.moveToFirst()) {
-            val albumId: Long =
-                cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
-            val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
-            val imgUri = ContentUris.withAppendedId(
-                sArtworkUri,
-                albumId
-            )
-            cursor.close()
-            return imgUri
-        }
-        return null
-    }
 }

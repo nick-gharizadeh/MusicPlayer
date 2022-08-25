@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayer.R
 import com.example.musicplayer.data.Music
 import com.example.musicplayer.databinding.MusicItemBinding
@@ -20,10 +23,12 @@ class MusicAdapter() :
     class ItemHolder(val binding: MusicItemBinding) : RecyclerView.ViewHolder(binding.root) {
         private val imageViewCover: ImageView = itemView.findViewById(R.id.imageView_music_cover)
         fun bind(music: Music) {
-
+            var requestOptions = RequestOptions()
+            requestOptions = requestOptions.transforms(CenterCrop(), RoundedCorners(16))
             Glide.with(itemView)
                 .load(music.albumArt)
                 .placeholder(R.drawable.ic_music_note)
+                .apply(requestOptions)
                 .into(imageViewCover)
 
         }
