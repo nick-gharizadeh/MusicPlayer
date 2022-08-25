@@ -2,10 +2,12 @@ package com.example.musicplayer.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.musicplayer.R
 import com.example.musicplayer.data.Music
 import com.example.musicplayer.databinding.MusicItemBinding
@@ -15,7 +17,17 @@ import com.example.musicplayer.databinding.MusicItemBinding
 
 class MusicAdapter() :
     ListAdapter<Music, MusicAdapter.ItemHolder>(MusicDiffCallback) {
-    class ItemHolder(val binding: MusicItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class ItemHolder(val binding: MusicItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val imageViewCover: ImageView = itemView.findViewById(R.id.imageView_music_cover)
+        fun bind(music: Music) {
+
+            Glide.with(itemView)
+                .load(music.albumArt)
+                .placeholder(R.drawable.ic_music_note)
+                .into(imageViewCover)
+
+        }
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
@@ -31,6 +43,7 @@ class MusicAdapter() :
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
         val music = getItem(position)
         holder.binding.music = music
+        holder.bind(music)
 
     }
 }
