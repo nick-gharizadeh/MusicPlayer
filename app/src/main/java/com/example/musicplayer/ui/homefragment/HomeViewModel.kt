@@ -22,7 +22,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val projection = arrayOf(
             MediaStore.Audio.AudioColumns.DATA,
             MediaStore.Audio.AudioColumns.ALBUM,
-            MediaStore.Audio.ArtistColumns.ARTIST
+            MediaStore.Audio.ArtistColumns.ARTIST,
+            MediaStore.Audio.AudioColumns.TITLE,
         )
 
         val c = context.contentResolver.query(
@@ -38,7 +39,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 val path: String = c.getString(0)
                 val album: String = c.getString(1)
                 val artist: String = c.getString(2)
-                val name = path.substring(path.lastIndexOf("/") + 1)
+                val name = c.getString(3)
                 audioModel.name = name
                 audioModel.album = album
                 audioModel.artist = artist
